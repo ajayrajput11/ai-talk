@@ -86,7 +86,7 @@ const Signup = () => {
                       name: e.target.value,
                     })
                   }
-                  placeholder="John Doe"
+                  placeholder="xyz"
                   className="flex-1 bg-transparent outline-none text-slate-900 placeholder:text-slate-400"
                 />
               </div>
