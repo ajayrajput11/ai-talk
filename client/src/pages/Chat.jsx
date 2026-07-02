@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Menu } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 
 import ChatSidebar from "../components/chat/ChatSidebar";
@@ -10,11 +11,14 @@ import EmptyChat from "../components/chat/EmptyChat";
 import { useChatStore } from "../store/chatStore";
 
 const Chat = () => {
+  const [sidebarOpen, setSidebarOpen] =
+    useState(false);
+
   const {
     messages,
     selectedChat,
     sendMessage,
-    isSending,
+    sending,
     fetchChats,
     fetchMessages,
   } = useChatStore();
@@ -34,15 +38,29 @@ const Chat = () => {
       <div className="flex h-screen bg-[#FAFAFA] overflow-hidden">
 
         {/* Sidebar */}
-        <ChatSidebar />
+        <ChatSidebar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
 
         {/* Main */}
         <div className="flex flex-col flex-1 bg-white border-l border-slate-200">
 
+          {/* Mobile Top Bar */}
+          <div className="md:hidden p-4 border-b border-slate-200">
+            <button
+              onClick={() =>
+                setSidebarOpen(true)
+              }
+              className="p-2 rounded-xl bg-slate-100"
+            >
+              <Menu size={22} />
+            </button>
+          </div>
+
           <ChatHeader chat={selectedChat} />
 
           <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-5">
-
             {!selectedChat ? (
               <EmptyChat />
             ) : messages.length === 0 ? (
@@ -66,7 +84,7 @@ const Chat = () => {
               ))
             )}
 
-            {isSending && (
+            {sending && (
               <div className="text-sm text-slate-500 animate-pulse">
                 AI is thinking...
               </div>
