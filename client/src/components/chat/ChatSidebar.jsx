@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Plus,
   Pin,
@@ -7,15 +7,21 @@ import {
   LayoutDashboard,
   User,
   LogOut,
+  Sparkles,
 } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 import { useChatStore } from "../../store/chatStore";
+import LogoutModal from "../common/LogoutModal";
 
 const ChatSidebar = ({
   sidebarOpen,
   setSidebarOpen,
 }) => {
   const navigate = useNavigate();
+
+  const [showLogoutModal, setShowLogoutModal] =
+    useState(false);
 
   const {
     chats,
@@ -64,12 +70,28 @@ const ChatSidebar = ({
         {/* Header */}
         <div className="p-5 border-b border-slate-200">
           <div className="flex items-center justify-between mb-4 md:hidden">
-            <h2 className="font-bold text-lg">
-              AI-TALK
-            </h2>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center">
+                <Sparkles
+                  size={18}
+                  className="text-white"
+                />
+              </div>
+
+              <div>
+                <h2 className="font-bold text-slate-900">
+                  AI-TALK
+                </h2>
+                <p className="text-[11px] text-slate-500">
+                  Smart AI Workspace
+                </p>
+              </div>
+            </div>
 
             <button
-              onClick={() => setSidebarOpen(false)}
+              onClick={() =>
+                setSidebarOpen(false)
+              }
             >
               <X size={22} />
             </button>
@@ -116,7 +138,7 @@ const ChatSidebar = ({
                     </p>
                   </div>
 
-                  {/* Actions always visible */}
+                  {/* Actions */}
                   <div className="flex gap-2">
                     <button
                       onClick={(e) => {
@@ -153,7 +175,9 @@ const ChatSidebar = ({
         {/* Bottom Menu */}
         <div className="p-4 border-t border-slate-200 space-y-3">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() =>
+              navigate("/dashboard")
+            }
             className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-100"
           >
             <LayoutDashboard size={18} />
@@ -161,7 +185,9 @@ const ChatSidebar = ({
           </button>
 
           <button
-            onClick={() => navigate("/profile")}
+            onClick={() =>
+              navigate("/profile")
+            }
             className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-100"
           >
             <User size={18} />
@@ -169,7 +195,9 @@ const ChatSidebar = ({
           </button>
 
           <button
-            onClick={handleLogout}
+            onClick={() =>
+              setShowLogoutModal(true)
+            }
             className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-red-50 text-red-500 hover:bg-red-100"
           >
             <LogOut size={18} />
@@ -177,6 +205,14 @@ const ChatSidebar = ({
           </button>
         </div>
       </aside>
+
+      <LogoutModal
+        isOpen={showLogoutModal}
+        onClose={() =>
+          setShowLogoutModal(false)
+        }
+        onConfirm={handleLogout}
+      />
     </>
   );
 };
