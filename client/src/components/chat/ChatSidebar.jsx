@@ -1,11 +1,22 @@
 import { useEffect } from "react";
-import { Plus, Pin, Trash2, X } from "lucide-react";
+import {
+  Plus,
+  Pin,
+  Trash2,
+  X,
+  LayoutDashboard,
+  User,
+  LogOut,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useChatStore } from "../../store/chatStore";
 
 const ChatSidebar = ({
   sidebarOpen,
   setSidebarOpen,
 }) => {
+  const navigate = useNavigate();
+
   const {
     chats,
     selectedChat,
@@ -25,9 +36,14 @@ const ChatSidebar = ({
     setSidebarOpen(false);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
     <>
-      {/* Mobile Overlay */}
+      {/* Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40 md:hidden"
@@ -48,9 +64,13 @@ const ChatSidebar = ({
         {/* Header */}
         <div className="p-5 border-b border-slate-200">
           <div className="flex items-center justify-between mb-4 md:hidden">
-            <h2 className="font-bold text-lg">Chats</h2>
+            <h2 className="font-bold text-lg">
+              AI-TALK
+            </h2>
 
-            <button onClick={() => setSidebarOpen(false)}>
+            <button
+              onClick={() => setSidebarOpen(false)}
+            >
               <X size={22} />
             </button>
           </div>
@@ -64,7 +84,7 @@ const ChatSidebar = ({
           </button>
         </div>
 
-        {/* Chat List */}
+        {/* Chats */}
         <div className="flex-1 overflow-y-auto p-3 space-y-3">
           {chats?.length === 0 ? (
             <p className="text-slate-400 text-center mt-10 text-sm">
@@ -78,34 +98,36 @@ const ChatSidebar = ({
                   setSelectedChat(chat);
                   setSidebarOpen(false);
                 }}
-                className={`group rounded-3xl p-4 cursor-pointer border transition-all ${
+                className={`rounded-3xl p-4 cursor-pointer border transition-all ${
                   selectedChat?._id === chat._id
                     ? "bg-slate-100 border-slate-300"
                     : "bg-white border-slate-200 hover:bg-slate-50"
                 }`}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
+                <div className="flex flex-col gap-3">
+                  <div>
                     <p className="font-semibold text-slate-900 truncate">
                       {chat.title}
                     </p>
 
                     <p className="text-sm text-slate-500 mt-1 truncate">
-                      {chat.lastMessage || "No messages yet"}
+                      {chat.lastMessage ||
+                        "No messages yet"}
                     </p>
                   </div>
 
-                  <div className="opacity-0 group-hover:opacity-100 flex gap-2 transition">
+                  {/* Actions always visible */}
+                  <div className="flex gap-2">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         togglePin(chat._id);
                       }}
-                      className="p-2 rounded-xl hover:bg-white"
+                      className="flex-1 p-2 rounded-xl bg-slate-100 hover:bg-slate-200"
                     >
                       <Pin
                         size={16}
-                        className="text-slate-500"
+                        className="mx-auto text-slate-600"
                       />
                     </button>
 
@@ -114,11 +136,11 @@ const ChatSidebar = ({
                         e.stopPropagation();
                         deleteChat(chat._id);
                       }}
-                      className="p-2 rounded-xl hover:bg-white"
+                      className="flex-1 p-2 rounded-xl bg-red-50 hover:bg-red-100"
                     >
                       <Trash2
                         size={16}
-                        className="text-red-500"
+                        className="mx-auto text-red-500"
                       />
                     </button>
                   </div>
@@ -126,6 +148,33 @@ const ChatSidebar = ({
               </div>
             ))
           )}
+        </div>
+
+        {/* Bottom Menu */}
+        <div className="p-4 border-t border-slate-200 space-y-3">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-100"
+          >
+            <LayoutDashboard size={18} />
+            Dashboard
+          </button>
+
+          <button
+            onClick={() => navigate("/profile")}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-100"
+          >
+            <User size={18} />
+            Profile
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-red-50 text-red-500 hover:bg-red-100"
+          >
+            <LogOut size={18} />
+            Logout
+          </button>
         </div>
       </aside>
     </>
